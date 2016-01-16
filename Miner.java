@@ -1,3 +1,5 @@
+//used jnativehook for keyboard and mouse listeners.
+
 package MouseScripts;
 
 import java.awt.AWTException;
