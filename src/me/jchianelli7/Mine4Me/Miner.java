@@ -1,6 +1,4 @@
-//used jnativehook for keyboard and mouse listeners.
-
-package MouseScripts;
+package me.jchianelli7.Mine4Me;
 
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
@@ -14,7 +12,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,12 +22,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+//Using jnativehook for keyboard and mouse listeners.
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-public class Mouse1Hold implements NativeKeyListener {
+public class Miner implements NativeKeyListener {
 	static Robot bot;
 
 	public static void main(String[] args) throws AWTException {
@@ -85,7 +83,7 @@ public class Mouse1Hold implements NativeKeyListener {
 			logger.setLevel(Level.OFF);
 			logger.setUseParentHandlers(false);
 			GlobalScreen.registerNativeHook();
-			GlobalScreen.addNativeKeyListener(new Mouse1Hold());
+			GlobalScreen.addNativeKeyListener(new Miner());
 
 		} catch (NativeHookException e) {
 			e.printStackTrace();
