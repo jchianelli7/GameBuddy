@@ -36,7 +36,7 @@ public class Miner implements NativeKeyListener {
 
 	public static void main(String[] args) throws AWTException {
 		bot = new Robot();
-		System.out.println("Starting Script............");
+		System.out.println("Starting Script.");
 		setup();
 	}
 
