@@ -53,7 +53,7 @@ public class Miner implements NativeKeyListener {
 		int key = e.getKeyCode();
 		if (key == NativeKeyEvent.VC_PAUSE) {
 			if (isPressed) {
-				System.out.println("Releasing");
+				System.out.println("Releasing...");
 				try {
 					Release();
 				} catch (InterruptedException e1) {
@@ -61,7 +61,7 @@ public class Miner implements NativeKeyListener {
 					e1.printStackTrace();
 				}
 			} else {
-				System.out.println("Pressing");
+				System.out.println("Pressing...");
 				try {
 					Click();
 				} catch (InterruptedException e1) {
