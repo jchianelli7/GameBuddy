@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +31,8 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 public class Miner implements NativeKeyListener {
 	static Robot bot;
+	
+	private ArrayList<Integer> keysToPress;
 
 	public static void main(String[] args) throws AWTException {
 		bot = new Robot();
@@ -37,12 +40,16 @@ public class Miner implements NativeKeyListener {
 		setup();
 	}
 
-	public static void Click() throws InterruptedException {
-		bot.mousePress(InputEvent.BUTTON1_MASK);
+	public void PressKeys() throws InterruptedException {
+		for (int key : keysToPress) {
+			bot.keyPress(key);
+		}
 	}
 
-	public static void Release() throws InterruptedException {
-		bot.mouseRelease(InputEvent.BUTTON1_MASK);
+	public void ReleaseKeys() throws InterruptedException {
+		for (int key : keysToPress) {
+			bot.keyRelease(key);
+		}
 	}
 
 	boolean isPressed = false;
@@ -55,17 +62,17 @@ public class Miner implements NativeKeyListener {
 			if (isPressed) {
 				System.out.println("Releasing.");
 				try {
-					Release();
+					bot.mouseRelease(InputEvent.BUTTON1_MASK);
+					ReleaseKeys();
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} else {
 				System.out.println("Pressing.");
 				try {
-					Click();
+					bot.mousePress(InputEvent.BUTTON1_MASK);
+					PressKeys();
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
