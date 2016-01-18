@@ -23,6 +23,10 @@ public class KeyList {
 		getListModel().addElement(name);
 	}
 
+	public void clearAll(){
+		keys.clear();
+		listModel.clear();
+	}
 	public void removeKey(int row) {
 		String name = getListModel().getElementAt(row);
 		getListModel().remove(row);

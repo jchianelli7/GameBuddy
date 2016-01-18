@@ -115,6 +115,8 @@ public class Miner {
 			}
 		};
 
+		//menu bar
+		//adding File>Exit
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu file = new JMenu("File");
@@ -131,8 +133,24 @@ public class Miner {
 		
 		frame.setJMenuBar(menuBar);
 		
+		//adding Keys>Clear
+		JMenu keys = new JMenu("Keys");
+		JMenuItem key_clear = new JMenuItem("Clear All");
+		file_exit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				keyList.clearAll();
+			}
+		});
+		
+		keys.add(key_clear);
+		menuBar.add(keys);
+		
+		frame.setJMenuBar(menuBar);
+
+		
 		JButton button = new JButton();
-		button.setText("Click To Add Key");
+		button.setText("Add Key");
 		button.addActionListener(new ActionListener() {
 
 			@Override
@@ -141,7 +159,7 @@ public class Miner {
 				if (listening) {
 					((JButton) e.getSource()).setText("Listening");
 				} else {
-					((JButton) e.getSource()).setText("Click To Add Key");
+					((JButton) e.getSource()).setText("Add Key");
 				}
 			}
 		});
