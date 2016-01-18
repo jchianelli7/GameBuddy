@@ -158,6 +158,7 @@ public class Miner {
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+		
 
 		Mouse1.addActionListener(new ActionListener() {
 			@Override
@@ -182,7 +183,6 @@ public class Miner {
 				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
 			}
 		});
-
 		//c.anchor = GridBagConstraints.PAGE_START;
 		c.gridx = 0;
 		c.gridy = 1;
@@ -195,6 +195,19 @@ public class Miner {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		panel.add(Mouse2, c);
+
+		// JLabel
+		JLabel label1 = new JLabel();
+		label1.setText("Navigate to Keys>Add to add key.");
+		label1.setOpaque(true);
+		
+	/*	JLabel label2 = new JLabel();
+		label2.setText("Press \"Pause\" to start.");
+		label2.setOpaque(true);
+		panel.add(label2);*/
+		
+
+
 
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
