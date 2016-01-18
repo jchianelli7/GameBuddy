@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -115,8 +116,8 @@ public class Miner {
 			}
 		};
 
-		//menu bar
-		//adding File>Exit
+		// menu bar
+		// adding File>Exit
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu file = new JMenu("File");
@@ -127,43 +128,39 @@ public class Miner {
 				exit();
 			}
 		});
-		
+
 		file.add(file_exit);
 		menuBar.add(file);
-		
-		frame.setJMenuBar(menuBar);
-		
-		//adding Keys>Clear
+
+		// adding Keys>Clear
 		JMenu keys = new JMenu("Keys");
 		JMenuItem key_clear = new JMenuItem("Clear All");
-		file_exit.addActionListener(new ActionListener() {
+		key_clear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				keyList.clearAll();
 			}
 		});
-		
+
 		keys.add(key_clear);
 		menuBar.add(keys);
-		
-		frame.setJMenuBar(menuBar);
 
-		
-		JButton button = new JButton();
-		button.setText("Add Key");
-		button.addActionListener(new ActionListener() {
-
+		// adding Keys>Add
+		JMenuItem key_add = new JMenuItem("Add");
+		key_add.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				listening = !listening;
-				if (listening) {
-					((JButton) e.getSource()).setText("Listening");
-				} else {
-					((JButton) e.getSource()).setText("Add Key");
-				}
+			public void actionPerformed(ActionEvent event) {
+				listening=true;
 			}
 		});
-		panel.add(button);
+
+		keys.add(key_add);
+		menuBar.add(keys);
+
+		frame.setJMenuBar(menuBar);
+		
+		/*JLabel label = new JLabel();
+		label.setText("Navigate to Keys>Add to add key.");*/
 
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
