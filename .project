@@ -18,7 +18,7 @@
 		<link>
 			<name>projectBuilder.xml</name>
 			<type>1</type>
-			<location>D:/Main/MyDocuments/Coding/git/Mine4Me/projectBuilder.xml</location>
+			<locationURI>PROJECT_LOC/projectBuilder.xml</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
