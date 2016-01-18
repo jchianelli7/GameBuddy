@@ -20,9 +20,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -111,6 +115,22 @@ public class Miner {
 			}
 		};
 
+		JMenuBar menuBar = new JMenuBar();
+
+		JMenu file = new JMenu("File");
+		JMenuItem file_exit = new JMenuItem("Exit");
+		file_exit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				exit();
+			}
+		});
+		
+		file.add(file_exit);
+		menuBar.add(file);
+		
+		frame.setJMenuBar(menuBar);
+		
 		JButton button = new JButton();
 		button.setText("Click To Add Key");
 		button.addActionListener(new ActionListener() {
