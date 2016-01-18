@@ -3,6 +3,9 @@ package me.jchianelli7.Mine4Me;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Robot;
@@ -21,9 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 
 //Using jnativehook for keyboard and mouse listeners.
 import org.jnativehook.GlobalScreen;
@@ -47,7 +48,7 @@ public class Miner {
 	private String title = "Mine4Me";
 
 	private KeyList keyList;
-	
+
 	public int mouseButton;
 
 	JFrame frame;
@@ -111,16 +112,133 @@ public class Miner {
 
 	private boolean setupJFrame() {
 		frame = new JFrame(title);
+		frame.setIconImage(imgTonettaSquare);
+
+		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
+		frame.setResizable(false);
+		frame.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				exit();
+			}
+
+		});
 
 		@SuppressWarnings("serial")
-		JPanel panel = new JPanel() {
+		JPanel panel = new JPanel(new GridBagLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				g.drawImage(imgTonetta, 0, 0, null);
 			}
 		};
+		panel.setSize(new Dimension(frame.getWidth()/2, frame.getHeight()/2));
+		panel.setBorder(new TitledBorder("===="));
 
+		setupMenuBar(frame);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		// JLabel
+		JLabel label = new JLabel();
+		label.setText("Navigate to Keys > Add to add key.");
+		label.setOpaque(true);
+		
+		c.anchor = GridBagConstraints.PAGE_START;
+		
+		panel.add(label, c);
+		c.anchor = GridBagConstraints.CENTER;
+
+		// JRadioButton
+		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
+		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+
+		Mouse1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse1.isSelected()) {
+					Mouse2.setSelected(false);
+				} else {
+					Mouse1.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON1_DOWN_MASK;
+
+			}
+		});
+		Mouse2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse2.isSelected()) {
+					Mouse1.setSelected(false);
+				} else {
+					Mouse2.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
+			}
+		});
+
+		//c.anchor = GridBagConstraints.PAGE_START;
+		c.gridx = 0;
+		c.gridy = 1;
+		
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		panel.add(Mouse1, c);
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		panel.add(Mouse2, c);
+
+		JList<String> jList_keys = new JList<String>();
+		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jList_keys.setLayoutOrientation(JList.VERTICAL);
+		jList_keys.setVisibleRowCount(-1);
+
+		jList_keys.setModel(keyList.getListModel());
+
+		jList_keys.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					@SuppressWarnings("unchecked")
+					JList<String> list = (JList<String>) e.getSource();
+					int row = list.locationToIndex(e.getPoint());
+					keyList.removeKey(row);
+				}
+			}
+		});
+
+		JScrollPane keyListScroller = new JScrollPane(jList_keys);
+		keyListScroller.setPreferredSize(new Dimension(75, 250));
+		
+		c.gridx = 1;
+		c.gridy = 0;
+		c.weightx = 0.5;
+		c.weighty = 1;
+		
+		c.gridheight = 3;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.EAST;
+		panel.add(keyListScroller, c);
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+
+		frame.add(panel);
+		frame.setVisible(true);
+
+		return true;
+	}
+
+	private void setupMenuBar(JFrame frame) {
 		// menu bar
 		// adding File>Exit
 		JMenuBar menuBar = new JMenuBar();
@@ -161,84 +279,6 @@ public class Miner {
 
 		menuBar.add(keys);
 		frame.setJMenuBar(menuBar);
-
-		// JRadioButton
-		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
-		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-
-		Mouse1.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				if(Mouse1.isSelected()){
-					Mouse2.setSelected(false);
-				}else{
-					Mouse1.setSelected(false);
-				}
-				mouseButton=InputEvent.BUTTON1_MASK;
-				
-			}
-		});
-		Mouse2.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				if(Mouse2.isSelected()){
-					Mouse1.setSelected(false);
-				}else{
-					Mouse2.setSelected(false);
-				}
-				mouseButton=InputEvent.BUTTON2_MASK;
-			}
-		});
-		panel.add(Mouse1);
-		panel.add(Mouse2);
-
-		// JLabel
-		JLabel label = new JLabel();
-		label.setText("Navigate to Keys>Add to add key.");
-		label.setOpaque(true);
-		panel.add(label);
-
-		JList<String> jList_keys = new JList<String>();
-		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		jList_keys.setLayoutOrientation(JList.VERTICAL);
-		jList_keys.setVisibleRowCount(-1);
-
-		jList_keys.setModel(keyList.getListModel());
-
-		jList_keys.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					@SuppressWarnings("unchecked")
-					JList<String> list = (JList<String>) e.getSource();
-					int row = list.locationToIndex(e.getPoint());
-					keyList.removeKey(row);
-				}
-			}
-		});
-
-		JScrollPane keyListScroller = new JScrollPane(jList_keys);
-		keyListScroller.setPreferredSize(new Dimension(80, 250));
-		panel.add(keyListScroller);
-
-		frame.add(panel);
-
-		frame.setIconImage(imgTonettaSquare);
-
-		frame.setSize(imgTonetta.getWidth(), imgTonetta.getHeight());
-		frame.setResizable(false);
-		frame.addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent windowEvent) {
-				exit();
-			}
-
-		});
-		frame.setVisible(true);
-
-		return true;
 	}
 
 	private boolean setupSystemTray() {
