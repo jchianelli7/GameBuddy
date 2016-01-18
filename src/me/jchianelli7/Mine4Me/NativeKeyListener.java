@@ -1,0 +1,52 @@
+package me.jchianelli7.Mine4Me;
+
+import java.awt.event.InputEvent;
+
+import org.jnativehook.keyboard.NativeKeyEvent;
+
+public class NativeKeyListener implements org.jnativehook.keyboard.NativeKeyListener {
+
+	final Miner miner;
+
+	public NativeKeyListener(Miner miner) {
+		this.miner = miner;
+	}
+
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent e) {
+		int key = e.getKeyCode();
+		if (key == NativeKeyEvent.VC_PAUSE) {
+			if (miner.arePressed) {
+				System.out.println("Releasing.");
+				try {
+					miner.bot.mouseRelease(InputEvent.BUTTON1_MASK);
+					miner.releaseKeys();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			} else {
+				System.out.println("Pressing.");
+				try {
+					miner.bot.mousePress(InputEvent.BUTTON1_MASK);
+					miner.pressKeys();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			miner.arePressed = !miner.arePressed;
+		} else {
+			if (miner.listening) {
+				miner.getKeyList().addKey(e.getRawCode(), NativeKeyEvent.getKeyText(key));
+			}
+		}
+	}
+
+	@Override
+	public void nativeKeyReleased(NativeKeyEvent arg0) {
+	}
+
+	@Override
+	public void nativeKeyTyped(NativeKeyEvent arg0) {
+	}
+
+}

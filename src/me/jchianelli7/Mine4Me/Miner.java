@@ -1,9 +1,8 @@
 package me.jchianelli7.Mine4Me;
 
 import java.awt.AWTException;
-import java.awt.CheckboxMenuItem;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Robot;
@@ -11,182 +10,115 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 //Using jnativehook for keyboard and mouse listeners.
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
 
-import javafx.scene.input.KeyCode;
+import me.jchianelli7.Mine4Me.gui.KeyList;
 
-public class Miner implements NativeKeyListener {
-	static Robot mouseBot;
-	static Robot keyBot;
-	
-	static BufferedImage img = null;
-	static BufferedImage image2 = null;
-	
-	private static boolean listening;
-	private ArrayList<Integer> keysToPress;
-	
-	public Miner() {
-		keysToPress = new ArrayList<Integer>();
-	}
+public class Miner {
+
+	private String title = "Mine4Me";
+
+	private KeyList keyList;
+
+	JFrame frame;
+
+	Robot bot;
+
+	BufferedImage imgTonetta;
+	BufferedImage imgTonettaSquare;
+
+	boolean arePressed;
+	boolean listening;
 
 	public static void main(String[] args) throws AWTException {
-		mouseBot = new Robot();
-		keyBot = new Robot();
-		
-		System.out.println("Starting Script.");
-		setup();
+		System.out.println("Starting");
+		new Miner();
 	}
 
-	public void PressKeys() throws InterruptedException {
-		for (int key : keysToPress) {
-			keyBot.keyPress(key);
-			System.out.println("Pressing: " + key);
-		}
-	}
+	public Miner() {
 
-	public void ReleaseKeys() throws InterruptedException {
-		for (int key : keysToPress) {
-			keyBot.keyRelease(key);
-		}
-	}
+		keyList = new KeyList();
+		loadImages();
 
-	
-	boolean isPressed = false;
-
-	@Override
-	public void nativeKeyPressed(NativeKeyEvent e) {
-		int key = e.getKeyCode();
-		if (key == NativeKeyEvent.VC_PAUSE) {
-			if (isPressed) {
-				System.out.println("Releasing.");
-				try {
-					//mouseBot.mouseRelease(InputEvent.BUTTON1_MASK);
-					ReleaseKeys();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-			} else {
-				System.out.println("Pressing.");
-				try {
-					//mouseBot.mousePress(InputEvent.BUTTON1_MASK);
-					PressKeys();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-			}
-			isPressed = !isPressed;
-		} else {
-			if(listening) {
-				keysToPress.add(e.getRawCode());
-			}
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public static void setup() {
 		try {
-			Logger logger = Logger.getLogger(GlobalScreen.class.getPackage()
-					.getName());
+			Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
 			logger.setLevel(Level.OFF);
 			logger.setUseParentHandlers(false);
 			GlobalScreen.registerNativeHook();
-			GlobalScreen.addNativeKeyListener(new Miner());
+			GlobalScreen.addNativeKeyListener(new me.jchianelli7.Mine4Me.NativeKeyListener(this));
 
 		} catch (NativeHookException e) {
 			e.printStackTrace();
+			exit();
 		}
-
-		if (!SystemTray.isSupported()) {
-			System.out.println("SystemTray is not supported");
-			return;
-		}
-		final PopupMenu popup = new PopupMenu();
-
 
 		try {
-			img = ImageIO.read(ClassLoader.getSystemResource("imgs/toneta.jpg"));
-			image2 = ImageIO.read(ClassLoader.getSystemResource("imgs/toneta2.jpg"));
-		} catch (IOException e) {
-			System.exit(1);
-		}
-
-		final TrayIcon trayIcon = new TrayIcon(img);
-		trayIcon.setImageAutoSize(true);
-		final SystemTray tray = SystemTray.getSystemTray();
-
-		// Create a pop-up menu components
-		MenuItem aboutItem = new MenuItem("About");
-		CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
-		CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
-		Menu displayMenu = new Menu("Display");
-		MenuItem errorItem = new MenuItem("Error");
-		MenuItem warningItem = new MenuItem("Warning");
-		MenuItem infoItem = new MenuItem("Info");
-		MenuItem noneItem = new MenuItem("None");
-		MenuItem exitItem = new MenuItem("Exit");
-
-		// Add components to pop-up menu
-		popup.add(aboutItem);
-		popup.addSeparator();
-		popup.add(cb1);
-		popup.add(cb2);
-		popup.addSeparator();
-		popup.add(displayMenu);
-		displayMenu.add(errorItem);
-		displayMenu.add(warningItem);
-		displayMenu.add(infoItem);
-		displayMenu.add(noneItem);
-		popup.add(exitItem);
-
-		trayIcon.setPopupMenu(popup);
-
-		try {
-			tray.add(trayIcon);
+			bot = new Robot();
 		} catch (AWTException e) {
-			System.out.println("TrayIcon could not be added.");
+			e.printStackTrace();
+			exit();
 		}
 
-		JFrame frame = new JFrame("Mine4Me");
+		if (!setupSystemTray()) {
+			System.out.println("SystemTray is not supported");
+		}
 
+		if (!setupJFrame()) {
+			System.out.println("JFrame could not be setup!");
+			exit();
+		}
+
+	}
+
+	private void loadImages() {
+		try {
+			imgTonetta = ImageIO.read(ClassLoader.getSystemResource("imgs/tonetta.jpg"));
+			imgTonettaSquare = ImageIO.read(ClassLoader.getSystemResource("imgs/tonettaSquare.jpg"));
+		} catch (IOException e) {
+			exit();
+		}
+	}
+
+	private boolean setupJFrame() {
+		frame = new JFrame(title);
+
+		@SuppressWarnings("serial")
 		JPanel panel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.drawImage(image2, 0, 0, null);
+				g.drawImage(imgTonetta, 0, 0, null);
 			}
 		};
-		
-	
-		
+
 		JButton button = new JButton();
 		button.setText("Click To Add Key");
 		button.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				listening = !listening;
-				if(listening) {
+				if (listening) {
 					((JButton) e.getSource()).setText("Listening");
 				} else {
 					((JButton) e.getSource()).setText("Click To Add Key");
@@ -194,39 +126,103 @@ public class Miner implements NativeKeyListener {
 			}
 		});
 		panel.add(button);
-		
+
+		JList<String> jList_keys = new JList<String>();
+		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jList_keys.setLayoutOrientation(JList.VERTICAL);
+		jList_keys.setVisibleRowCount(-1);
+
+		jList_keys.setModel(keyList.getListModel());
+
+		jList_keys.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					@SuppressWarnings("unchecked")
+					JList<String> list = (JList<String>) e.getSource();
+					int row = list.locationToIndex(e.getPoint());
+					keyList.removeKey(row);
+				}
+			}
+		});
+
+		JScrollPane keyListScroller = new JScrollPane(jList_keys);
+		keyListScroller.setPreferredSize(new Dimension(80, 250));
+		panel.add(keyListScroller);
+
 		frame.add(panel);
 
-		frame.setIconImage(img);
+		frame.setIconImage(imgTonettaSquare);
 
-		frame.setSize(image2.getWidth(), image2.getHeight());
+		frame.setSize(imgTonetta.getWidth(), imgTonetta.getHeight());
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				try {
-					GlobalScreen.unregisterNativeHook();
-				} catch (NativeHookException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.exit(1);
+				exit();
 			}
-			
+
 		});
 		frame.setVisible(true);
 
+		return true;
 	}
 
-	@Override
-	public void nativeKeyReleased(NativeKeyEvent arg0) {
-		// TODO Auto-generated method stub
+	private boolean setupSystemTray() {
+		if (!SystemTray.isSupported()) {
+			return false;
+		}
+
+		final TrayIcon trayIcon = new TrayIcon(imgTonettaSquare);
+		trayIcon.setImageAutoSize(true);
+
+		final PopupMenu popup = new PopupMenu();
+
+		MenuItem exitItem = new MenuItem("Exit");
+
+		popup.add(exitItem);
+
+		trayIcon.setPopupMenu(popup);
+
+		final SystemTray tray = SystemTray.getSystemTray();
+
+		try {
+			tray.add(trayIcon);
+		} catch (AWTException e) {
+			System.out.println("TrayIcon could not be added.");
+			return false;
+		}
+
+		return true;
 	}
 
-	@Override
-	public void nativeKeyTyped(NativeKeyEvent arg0) {
-		// TODO Auto-generated method stub
+	public void pressKeys() throws InterruptedException {
+		for (Integer key : keyList.getKeys()) {
+			bot.keyPress(key);
+		}
 	}
 
+	public void releaseKeys() throws InterruptedException {
+		for (Integer key : keyList.getKeys()) {
+			bot.keyRelease(key);
+		}
+	}
+
+	public void exit() {
+		System.out.println("Exiting");
+
+		try {
+			GlobalScreen.unregisterNativeHook();
+		} catch (NativeHookException e) {
+			e.printStackTrace();
+		}
+
+		System.exit(1);
+	}
+
+	public KeyList getKeyList() {
+		return keyList;
+	}
 }
