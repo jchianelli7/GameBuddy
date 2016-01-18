@@ -19,7 +19,7 @@ public class NativeKeyListener implements org.jnativehook.keyboard.NativeKeyList
 			if (miner.arePressed) {
 				System.out.println("Releasing.");
 				try {
-					miner.bot.mouseRelease(InputEvent.BUTTON1_MASK);
+					miner.bot.mouseRelease(miner.mouseButton);
 					miner.releaseKeys();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
@@ -27,7 +27,7 @@ public class NativeKeyListener implements org.jnativehook.keyboard.NativeKeyList
 			} else {
 				System.out.println("Pressing.");
 				try {
-					miner.bot.mousePress(InputEvent.BUTTON1_MASK);
+					miner.bot.mousePress(miner.mouseButton);
 					miner.pressKeys();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
@@ -37,6 +37,7 @@ public class NativeKeyListener implements org.jnativehook.keyboard.NativeKeyList
 		} else {
 			if (miner.listening) {
 				miner.getKeyList().addKey(e.getRawCode(), NativeKeyEvent.getKeyText(key));
+				miner.listening=false;
 			}
 		}
 	}

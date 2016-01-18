@@ -10,6 +10,7 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -20,8 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -44,6 +47,8 @@ public class Miner {
 	private String title = "Mine4Me";
 
 	private KeyList keyList;
+	
+	public int mouseButton;
 
 	JFrame frame;
 
@@ -143,24 +148,55 @@ public class Miner {
 		});
 
 		keys.add(key_clear);
-		menuBar.add(keys);
-
 		// adding Keys>Add
 		JMenuItem key_add = new JMenuItem("Add");
 		key_add.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				listening=true;
+				listening = true;
 			}
 		});
 
 		keys.add(key_add);
-		menuBar.add(keys);
 
+		menuBar.add(keys);
 		frame.setJMenuBar(menuBar);
-		
-		/*JLabel label = new JLabel();
-		label.setText("Navigate to Keys>Add to add key.");*/
+
+		// JRadioButton
+		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
+		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+
+		Mouse1.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				if(Mouse1.isSelected()){
+					Mouse2.setSelected(false);
+				}else{
+					Mouse1.setSelected(false);
+				}
+				mouseButton=InputEvent.BUTTON1_MASK;
+				
+			}
+		});
+		Mouse2.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				if(Mouse2.isSelected()){
+					Mouse1.setSelected(false);
+				}else{
+					Mouse2.setSelected(false);
+				}
+				mouseButton=InputEvent.BUTTON2_MASK;
+			}
+		});
+		panel.add(Mouse1);
+		panel.add(Mouse2);
+
+		// JLabel
+		JLabel label = new JLabel();
+		label.setText("Navigate to Keys>Add to add key.");
+		label.setOpaque(true);
+		panel.add(label);
 
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
