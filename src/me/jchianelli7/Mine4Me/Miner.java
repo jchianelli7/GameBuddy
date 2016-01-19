@@ -153,6 +153,12 @@ public class Miner {
 		label.setOpaque(true);
 		
 		panel.add(label, c);
+		
+		c.gridy=1;
+		JLabel label2 = new JLabel();
+		label2.setText("Press \"Pause\" to start.");
+		label2.setOpaque(true);
+		panel.add(label2, c);
 
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
@@ -184,26 +190,16 @@ public class Miner {
 		});
 		
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = 2;
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(Mouse1, c);
 		
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(Mouse2, c);
-
-		// JLabel
-		JLabel label1 = new JLabel();
-		label1.setText("Navigate to Keys>Add to add key.");
-		label1.setOpaque(true);
-		
-	/*	JLabel label2 = new JLabel();
-		label2.setText("Press \"Pause\" to start.");
-		label2.setOpaque(true);
-		panel.add(label2);*/
 		
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -233,7 +229,7 @@ public class Miner {
 		c.weightx = 1;
 		c.weighty = 1;
 		
-		c.gridheight = 3;
+		c.gridheight = 4;
 		c.anchor = GridBagConstraints.EAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;
