@@ -1,6 +1,7 @@
 package me.jchianelli7.Mine4Me;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -34,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
@@ -134,26 +136,23 @@ public class Miner {
 			}
 		};
 		panel.setSize(new Dimension(frame.getWidth()/2, frame.getHeight()/2));
-		panel.setBorder(new TitledBorder("===="));
+		//panel.setBorder(new TitledBorder("===="));
 
 		setupMenuBar(frame);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
-		c.weighty = 0.5;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.anchor = GridBagConstraints.NORTHWEST;
 
 		// JLabel
 		JLabel label = new JLabel();
 		label.setText("Navigate to Keys > Add to add key.");
 		label.setOpaque(true);
 		
-		c.anchor = GridBagConstraints.PAGE_START;
-		
 		panel.add(label, c);
-		c.anchor = GridBagConstraints.CENTER;
 
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
@@ -183,17 +182,17 @@ public class Miner {
 				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
 			}
 		});
-		//c.anchor = GridBagConstraints.PAGE_START;
+		
 		c.gridx = 0;
 		c.gridy = 1;
-		
-		c.weightx = 0.5;
-		c.weighty = 0.5;
+		c.weightx = 0;
+		c.weighty = 0;
 		panel.add(Mouse1, c);
+		
 		c.gridx = 0;
 		c.gridy = 2;
-		c.weightx = 0.5;
-		c.weighty = 0.5;
+		c.weightx = 0;
+		c.weighty = 0;
 		panel.add(Mouse2, c);
 
 		// JLabel
@@ -206,9 +205,6 @@ public class Miner {
 		label2.setOpaque(true);
 		panel.add(label2);*/
 		
-
-
-
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList_keys.setLayoutOrientation(JList.VERTICAL);
@@ -234,15 +230,13 @@ public class Miner {
 		
 		c.gridx = 1;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 1;
 		c.weighty = 1;
 		
 		c.gridheight = 3;
-		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 
 		frame.add(panel);
