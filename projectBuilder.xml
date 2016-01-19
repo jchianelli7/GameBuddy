@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="MakeJar" name="Create Runnable Jar for Project Mine4Me">
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.jarfile" value="${dir.buildfile}/bin"/>
+    <target name="MakeJar">
+        <jar destfile="${dir.jarfile}/Mine4Me.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="me.jchianelli7.Mine4Me.Miner"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${dir.jarfile}" excludes="Mine4Me.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jnativehook-2.0.3.jar"/>
+        </jar>
+    </target>
+</project>
