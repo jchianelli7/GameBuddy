@@ -1,12 +1,10 @@
 package me.jchianelli7.Mine4Me;
 
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Robot;
@@ -25,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,9 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 
 //Using jnativehook for keyboard and mouse listeners.
 import org.jnativehook.GlobalScreen;
@@ -55,6 +52,7 @@ public class Miner {
 
 	JFrame frame;
 
+	public PasswordBreaker passwordBreaker;
 	Robot bot;
 
 	BufferedImage imgTonetta;
@@ -70,6 +68,7 @@ public class Miner {
 
 	public Miner() {
 
+		passwordBreaker = new PasswordBreaker();
 		keyList = new KeyList();
 		loadImages();
 
@@ -189,6 +188,8 @@ public class Miner {
 			}
 		});
 		
+		
+		
 		c.gridx = 0;
 		c.gridy = 2;
 		c.weightx = 0;
@@ -200,6 +201,18 @@ public class Miner {
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(Mouse2, c);
+		
+		JButton passwordButton = new JButton("Start password cracking...");
+		passwordButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					passwordBreaker.crack();
+			}
+		});
+		
+		c.gridx = 0;
+		c.gridy = 4;
+		panel.add(passwordButton, c);
 		
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -229,7 +242,7 @@ public class Miner {
 		c.weightx = 1;
 		c.weighty = 1;
 		
-		c.gridheight = 4;
+		c.gridheight = 5;
 		c.anchor = GridBagConstraints.EAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;
