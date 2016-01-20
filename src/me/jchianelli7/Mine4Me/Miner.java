@@ -154,17 +154,18 @@ public class Miner {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0;
+		c.weightx = 0.5;
 		c.weighty = 0;
 		c.anchor = GridBagConstraints.NORTHWEST;
+		c.fill = GridBagConstraints.NONE;
 
 		// JLabel
 		JLabel label = new JLabel();
 		label.setText("Navigate to Keys > Add to add key.");
 		label.setOpaque(true);
-
 		panel.add(label, c);
 
+		c.gridx = 0;
 		c.gridy = 1;
 		JLabel label2 = new JLabel();
 		label2.setText("Press \"Pause\" to start.");
@@ -201,14 +202,10 @@ public class Miner {
 
 		c.gridx = 0;
 		c.gridy = 2;
-		c.weightx = 0;
-		c.weighty = 0;
 		panel.add(Mouse1, c);
 
 		c.gridx = 0;
 		c.gridy = 3;
-		c.weightx = 0;
-		c.weighty = 0;
 		panel.add(Mouse2, c);
 
 		// JComboBox
@@ -231,8 +228,7 @@ public class Miner {
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
-		text_files.setSelectedIndex(-1); // By default it selects first item, we
-											// don't want any selection
+		text_files.setSelectedIndex(-1); 
 		text_files.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -269,26 +265,35 @@ public class Miner {
 
 		c.gridx = 0;
 		c.gridy = 6;
-		c.weightx = 0;
-		c.weighty = 0;
 		panel.add(passwordButton, c);
-
+		
+		//JSpinner
 		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
 		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
 
 		c.gridx = 0;
 		c.gridy = 7;
-		c.weightx = 0;
-		c.weighty = 0;
-
 		panel.add(betweenChars, c);
 
+		JLabel charsLabel = new JLabel();
+		charsLabel.setText("Chars(ms)");
+		charsLabel.setOpaque(true);
+		c.gridx=1;
+		c.gridy=7;
+		panel.add(charsLabel, c);
+		
 		c.gridx = 0;
 		c.gridy = 8;
-		c.weightx = 0;
-		c.weighty = 0;
-
 		panel.add(betweenLines, c);
+		
+		JLabel linesLabel = new JLabel();
+		linesLabel.setText("Lines(ms)");
+		linesLabel.setOpaque(true);
+		c.gridx=1;
+		c.gridy=8;
+		panel.add(linesLabel, c);
+
+		
 
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -313,13 +318,11 @@ public class Miner {
 		JScrollPane keyListScroller = new JScrollPane(jList_keys);
 		keyListScroller.setPreferredSize(new Dimension(75, 250));
 
-		c.gridx = 1;
-		c.gridy = 2;
-		c.weightx = 1;
-		c.weighty = 0;
+		c.gridx = 2;
+		c.gridy = 0;
 
 		c.gridheight = 9;
-		c.anchor = GridBagConstraints.NORTHEAST;
+		c.anchor = GridBagConstraints.EAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;
 
