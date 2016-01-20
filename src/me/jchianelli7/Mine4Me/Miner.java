@@ -33,7 +33,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
 //Using jnativehook for keyboard and mouse listeners.
@@ -43,8 +45,10 @@ import org.jnativehook.NativeHookException;
 import me.jchianelli7.Mine4Me.gui.KeyList;
 
 public class Miner {
+	
+	public static Miner instance;
 
-	private String title = "Mine4Me";
+	private String title = "Game Buddy (TM)";
 
 	private KeyList keyList;
 
@@ -60,10 +64,13 @@ public class Miner {
 
 	boolean arePressed;
 	boolean listening;
+	
+	public JSpinner betweenChars;
+	public JSpinner betweenLines;
 
 	public static void main(String[] args) throws AWTException {
 		System.out.println("Starting");
-		new Miner();
+		instance = new Miner();
 	}
 
 	public Miner() {
@@ -212,7 +219,26 @@ public class Miner {
 		
 		c.gridx = 0;
 		c.gridy = 4;
+		c.weightx = 0;
+		c.weighty = 0;
 		panel.add(passwordButton, c);
+		
+		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
+		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
+
+		c.gridx = 0;
+		c.gridy = 5;
+		c.weightx = 0;
+		c.weighty = 0;
+		
+		panel.add(betweenChars, c);
+		
+		c.gridx = 0;
+		c.gridy = 6;
+		c.weightx = 0;
+		c.weighty = 0;		
+		
+		panel.add(betweenLines, c);
 		
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -242,7 +268,7 @@ public class Miner {
 		c.weightx = 1;
 		c.weighty = 1;
 		
-		c.gridheight = 5;
+		c.gridheight = 7;
 		c.anchor = GridBagConstraints.EAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;

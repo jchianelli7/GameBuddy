@@ -52,12 +52,12 @@ class PasswordThread extends Thread {
 					
 					bot.keyPress((int) KeyEvent.class.getField("VK_" + c).getInt(null));
 					bot.keyRelease((int) KeyEvent.class.getField("VK_" + c).getInt(null));
-					//Thread.sleep(1);
+					Thread.sleep((int) Miner.instance.betweenChars.getValue());
 				}
 				
 				bot.keyPress(KeyEvent.VK_ENTER);
 				//Thread.sleep(0, 500000);
-				//Thread.sleep(1);
+				Thread.sleep((int) Miner.instance.betweenLines.getValue());
 				line = in.readLine();
 			}
 			
