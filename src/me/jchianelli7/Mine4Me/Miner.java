@@ -212,7 +212,13 @@ public class Miner {
 		passwordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fileTyper.run("40wordcommon.txt");;
+				if(fileTyper.isRunning()) {
+					fileTyper.stop();
+					((JButton)e.getSource()).setText("Press to start");
+				} else {
+					fileTyper.run("40wordcommon.txt");
+					((JButton) e.getSource()).setText("Running");
+				}
 			}
 		});
 		

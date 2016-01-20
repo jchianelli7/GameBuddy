@@ -19,6 +19,17 @@ public class FileTyper {
 		thread = new FileTyperThread("FileTyper", fileName);
 		thread.start();
 	}
+	
+	public void stop() {
+		thread.interrupt();
+	}
+	
+	public boolean isRunning() {
+		if(thread == null) {
+			return false;
+		}
+		return thread.isAlive();
+	}
 
 }
 
@@ -32,36 +43,47 @@ class FileTyperThread extends Thread {
 	}
 
 	public void run() {
-
+		BufferedReader in;
 		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResource("files/" + fileName).openStream()));
+			in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResource("files/" + fileName).openStream()));
 			
-			Robot bot = new Robot();
-
-			String line;
-			line = in.readLine();
-			
-			Thread.sleep(3000);
-
-			while (line != null) {
-				System.out.println("Typing: " + line);
-
-				for (int i = 0; i < line.length(); i++) {
-					char c = Character.toUpperCase(line.charAt(i));
-					
-					bot.keyPress((int) KeyEvent.class.getField("VK_" + c).getInt(null));
-					bot.keyRelease((int) KeyEvent.class.getField("VK_" + c).getInt(null));
-					Thread.sleep((int) Miner.instance.betweenChars.getValue());
-				}
+			try {
 				
-				bot.keyPress(KeyEvent.VK_ENTER);
-				Thread.sleep((int) Miner.instance.betweenLines.getValue());
+				Robot bot = new Robot();
+
+				String line;
 				line = in.readLine();
+				
+				Thread.sleep(3000);
+
+				while (line != null) {
+					if(Thread.currentThread().isInterrupted()) {
+						break;
+					}
+					
+					System.out.println("Typing: " + line);
+
+					for (int i = 0; i < line.length(); i++) {
+						char c = Character.toUpperCase(line.charAt(i));
+						
+						bot.keyPress((int) KeyEvent.class.getField("VK_" + c).getInt(null));
+						bot.keyRelease((int) KeyEvent.class.getField("VK_" + c).getInt(null));
+						Thread.sleep((int) Miner.instance.betweenChars.getValue());
+					}
+					
+					bot.keyPress(KeyEvent.VK_ENTER);
+					Thread.sleep((int) Miner.instance.betweenLines.getValue());
+					line = in.readLine();
+				}
+
+			} catch (AWTException | IOException | InterruptedException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			} finally {
+				in.close();
 			}
 			
-			in.close();
-		} catch (AWTException | IOException | InterruptedException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 }
