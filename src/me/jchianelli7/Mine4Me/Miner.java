@@ -1,6 +1,7 @@
 package me.jchianelli7.Mine4Me;
 
 import java.awt.AWTException;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -34,6 +36,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -45,7 +48,7 @@ import org.jnativehook.NativeHookException;
 import me.jchianelli7.Mine4Me.gui.KeyList;
 
 public class Miner {
-	
+
 	public static Miner instance;
 	public static final Settings settings = new Settings();
 
@@ -63,7 +66,7 @@ public class Miner {
 
 	boolean arePressed;
 	boolean listening;
-	
+
 	public JSpinner betweenChars;
 	public JSpinner betweenLines;
 
@@ -140,11 +143,11 @@ public class Miner {
 				g.drawImage(imgTonetta, 0, 0, null);
 			}
 		};
-		panel.setSize(new Dimension(frame.getWidth()/2, frame.getHeight()/2));
-		//panel.setBorder(new TitledBorder("===="));
+		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
+		// panel.setBorder(new TitledBorder("===="));
 
 		setupMenuBar(frame);
-		
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
@@ -156,10 +159,10 @@ public class Miner {
 		JLabel label = new JLabel();
 		label.setText("Navigate to Keys > Add to add key.");
 		label.setOpaque(true);
-		
+
 		panel.add(label, c);
-		
-		c.gridy=1;
+
+		c.gridy = 1;
 		JLabel label2 = new JLabel();
 		label2.setText("Press \"Pause\" to start.");
 		label2.setOpaque(true);
@@ -168,7 +171,6 @@ public class Miner {
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-		
 
 		Mouse1.addActionListener(new ActionListener() {
 			@Override
@@ -193,58 +195,84 @@ public class Miner {
 				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
 			}
 		});
-		
-		
-		
+
 		c.gridx = 0;
 		c.gridy = 2;
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(Mouse1, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 3;
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(Mouse2, c);
-		
-		JButton passwordButton = new JButton("Start password cracking...");
+
+		// JComboBox
+
+		String[] txtFiles = { "40wordcommon.txt", "super pwl.txt" };
+
+		JComboBox text_files = new JComboBox(txtFiles);
+		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
+		text_files.setSelectedIndex(-1); // By default it selects first item, we
+											// don't want any selection
+		text_files.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		JButton clearSelectionButton = new JButton("Clear selection");
+		clearSelectionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				text_files.setSelectedIndex(-1);
+			}
+		});
+		c.gridx = 0;
+		c.gridy = 4;
+		panel.add(clearSelectionButton, c);
+		c.gridx = 0;
+		c.gridy = 5;
+		panel.add(text_files, c);
+
+		JButton passwordButton = new JButton("Press to start");
 		passwordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(fileTyper.isRunning()) {
+				if (fileTyper.isRunning()) {
 					fileTyper.stop();
-					((JButton)e.getSource()).setText("Press to start");
+					((JButton) e.getSource()).setText("Press to start");
 				} else {
 					fileTyper.run("40wordcommon.txt");
 					((JButton) e.getSource()).setText("Running");
 				}
+
 			}
 		});
-		
+
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 6;
 		c.weightx = 0;
 		c.weighty = 0;
 		panel.add(passwordButton, c);
-		
+
 		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
 		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
 
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 7;
 		c.weightx = 0;
 		c.weighty = 0;
-		
+
 		panel.add(betweenChars, c);
-		
+
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 8;
 		c.weightx = 0;
-		c.weighty = 0;		
-		
+		c.weighty = 0;
+
 		panel.add(betweenLines, c);
-		
+
 		JList<String> jList_keys = new JList<String>();
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList_keys.setLayoutOrientation(JList.VERTICAL);
@@ -267,17 +295,16 @@ public class Miner {
 
 		JScrollPane keyListScroller = new JScrollPane(jList_keys);
 		keyListScroller.setPreferredSize(new Dimension(75, 250));
-		
+
 		c.gridx = 1;
-		c.gridy = 0;
+		c.gridy = 2;
 		c.weightx = 1;
-		c.weighty = 1;
-		
-		c.gridheight = 7;
-		c.anchor = GridBagConstraints.EAST;
+		c.weighty = 0;
+
+		c.gridheight = 9;
+		c.anchor = GridBagConstraints.NORTHEAST;
 		panel.add(keyListScroller, c);
 		c.gridheight = 1;
-		c.anchor = GridBagConstraints.CENTER;
 
 		frame.add(panel);
 		frame.setVisible(true);
@@ -383,8 +410,27 @@ public class Miner {
 	public KeyList getKeyList() {
 		return keyList;
 	}
-	
+
 	public Settings getSettings() {
 		return settings;
+	}
+
+	// JComboBox title setup
+	class MyComboBoxRenderer extends JLabel implements ListCellRenderer {
+		private String _title;
+
+		public MyComboBoxRenderer(String title) {
+			_title = title;
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+				boolean hasFocus) {
+			if (index == -1 && value == null)
+				setText(_title);
+			else
+				setText(value.toString());
+			return this;
+		}
+
 	}
 }
