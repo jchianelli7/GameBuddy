@@ -19,7 +19,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -209,10 +212,24 @@ public class Miner {
 		panel.add(Mouse2, c);
 
 		// JComboBox
+		ArrayList<String> txtFiles = new ArrayList<String>();
+		
+		try {
+			File filesFolder = new File(ClassLoader.getSystemResource("files").toURI());
+			File[] fileList = filesFolder.listFiles();
+			
+			for(int i = 0; i < fileList.length; i++) {
+				if(fileList[i].isFile()) {
+					txtFiles.add(fileList[i].getName());
+				}
+			}
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+		}
+		
+		
 
-		String[] txtFiles = { "40wordcommon.txt", "super pwl.txt" };
-
-		JComboBox text_files = new JComboBox(txtFiles);
+		JComboBox text_files = new JComboBox(txtFiles.toArray());
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1); // By default it selects first item, we
 											// don't want any selection
