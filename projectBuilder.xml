@@ -3,12 +3,12 @@
     <property name="dir.buildfile" value="."/>
     <property name="dir.jarfile" value="${dir.buildfile}/bin"/>
     <target name="MakeJar">
-        <jar destfile="${dir.jarfile}/Mine4Me.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="${dir.jarfile}/GameBuddy.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="me.jchianelli7.Mine4Me.Miner"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="${dir.jarfile}" excludes="Mine4Me.jar"/>
+            <fileset dir="${dir.jarfile}" excludes="GameBuddy.jar.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/deps/jnativehook-2.0.3.jar"/>
         </jar>
     </target>
