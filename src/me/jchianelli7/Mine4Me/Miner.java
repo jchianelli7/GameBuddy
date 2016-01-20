@@ -47,8 +47,7 @@ import me.jchianelli7.Mine4Me.gui.KeyList;
 public class Miner {
 	
 	public static Miner instance;
-
-	private String title = "Game Buddy (TM)";
+	public static final Settings settings = new Settings();
 
 	private KeyList keyList;
 
@@ -56,7 +55,7 @@ public class Miner {
 
 	JFrame frame;
 
-	public PasswordBreaker passwordBreaker;
+	public FileTyper fileTyper;
 	Robot bot;
 
 	BufferedImage imgTonetta;
@@ -75,7 +74,7 @@ public class Miner {
 
 	public Miner() {
 
-		passwordBreaker = new PasswordBreaker();
+		fileTyper = new FileTyper();
 		keyList = new KeyList();
 		loadImages();
 
@@ -119,7 +118,7 @@ public class Miner {
 	}
 
 	private boolean setupJFrame() {
-		frame = new JFrame(title);
+		frame = new JFrame(getSettings().name);
 		frame.setIconImage(imgTonettaSquare);
 
 		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
@@ -213,7 +212,7 @@ public class Miner {
 		passwordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					passwordBreaker.crack();
+				fileTyper.run("40wordcommon.txt");;
 			}
 		});
 		
@@ -377,5 +376,9 @@ public class Miner {
 
 	public KeyList getKeyList() {
 		return keyList;
+	}
+	
+	public Settings getSettings() {
+		return settings;
 	}
 }

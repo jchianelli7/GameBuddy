@@ -3,49 +3,48 @@ package me.jchianelli7.Mine4Me;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-
-import javax.swing.KeyStroke;
+import java.io.InputStreamReader;
 
 import com.sun.glass.events.KeyEvent;
 
-public class PasswordBreaker {
+public class FileTyper {
 
-	private PasswordThread thread;
+	private FileTyperThread thread;
 
-	public PasswordBreaker() {
-		thread = new PasswordThread("Password");
+	public FileTyper() {
 	}
 
-	public void crack() {
+	public void run(String fileName) {
+		thread = new FileTyperThread("FileTyper", fileName);
 		thread.start();
 	}
 
 }
 
-class PasswordThread extends Thread {
-	public PasswordThread(String name) {
+class FileTyperThread extends Thread {
+	
+	private final String fileName;
+	
+	public FileTyperThread(String name, String fileName) {
 		super(name);
+		this.fileName = fileName;
 	}
 
 	public void run() {
 
 		try {
-			//BufferedReader in = new BufferedReader(new FileReader("res/lists/40wordcommon.txt"));
-			BufferedReader in = new BufferedReader(new FileReader("res/lists/super pwl.txt"));
-			
+			BufferedReader in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResource("files/" + fileName).openStream()));
 			
 			Robot bot = new Robot();
 
 			String line;
-
 			line = in.readLine();
 			
 			Thread.sleep(3000);
 
 			while (line != null) {
-				System.out.println("Trying: " + line);
+				System.out.println("Typing: " + line);
 
 				for (int i = 0; i < line.length(); i++) {
 					char c = Character.toUpperCase(line.charAt(i));
@@ -56,7 +55,6 @@ class PasswordThread extends Thread {
 				}
 				
 				bot.keyPress(KeyEvent.VK_ENTER);
-				//Thread.sleep(0, 500000);
 				Thread.sleep((int) Miner.instance.betweenLines.getValue());
 				line = in.readLine();
 			}
