@@ -109,6 +109,9 @@ public class Miner {
 
 	}
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	private boolean setupJFrame() {
 		Theme theme = getSettings().getCurrentTheme();
 
@@ -132,7 +135,7 @@ public class Miner {
 		});
 
 		@SuppressWarnings("serial")
-		JPanel panel = new JPanel(new GridBagLayout()) {
+		JPanel panel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
@@ -142,61 +145,8 @@ public class Miner {
 			}
 		};
 		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
-		
+
 		setupMenuBar(frame);
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0.5;
-		c.weighty = 1;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		c.fill = GridBagConstraints.NONE;
-
-		JPanel leftColumnPanel = new JPanel();
-		leftColumnPanel.setLayout(new BoxLayout(leftColumnPanel, BoxLayout.Y_AXIS));
-		leftColumnPanel.setPreferredSize(new Dimension(50, frame.getHeight()));
-		JLabel label = new JLabel();
-		label.setText("Navigate to Keys > Add to add key.");
-
-		label.setOpaque(true);
-		leftColumnPanel.add(label);
-
-		JLabel label2 = new JLabel();
-		label2.setText("Press \"Pause\" to start.");
-		label2.setOpaque(true);
-		leftColumnPanel.add(label2);
-
-		// JRadioButton
-		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
-		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-
-		Mouse1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (Mouse1.isSelected()) {
-					Mouse2.setSelected(false);
-				} else {
-					Mouse1.setSelected(false);
-				}
-				mouseButton = InputEvent.BUTTON1_DOWN_MASK;
-
-			}
-		});
-		Mouse2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (Mouse2.isSelected()) {
-					Mouse1.setSelected(false);
-				} else {
-					Mouse2.setSelected(false);
-				}
-				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
-			}
-		});
-
-		leftColumnPanel.add(Mouse1);
-		leftColumnPanel.add(Mouse2);
 
 		// JComboBox
 		ArrayList<String> txtFiles = new ArrayList<String>();
@@ -213,58 +163,73 @@ public class Miner {
 		} catch (URISyntaxException e1) {
 			e1.printStackTrace();
 		}
+		panel.setLayout(null);
+
+		frame.getContentPane().add(panel);
+		JLabel label = new JLabel();
+		label.setBounds(10, 11, 218, 19);
+		panel.add(label);
+		label.setText("Navigate to Keys > Add to add key.");
+
+		label.setOpaque(true);
+
+		JLabel label2 = new JLabel();
+		label2.setBounds(10, 28, 152, 25);
+		panel.add(label2);
+		label2.setText("Press \"Pause\" to start.");
+		label2.setOpaque(true);
+
+		JLabel label3 = new JLabel();
+		label3.setBounds(10, 139, 103, 25);
+		panel.add(label3);
+		label3.setText("Select .txt File");
+		label3.setOpaque(true);
+
+		// JRadioButton
+		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
+		Mouse1.setBounds(10, 56, 75, 25);
+		panel.add(Mouse1);
+		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+		Mouse2.setBounds(87, 56, 89, 24);
+		panel.add(Mouse2);
+		JButton clearSelectionButton = new JButton("Clear selection");
+		clearSelectionButton.setBounds(10, 88, 103, 25);
+		panel.add(clearSelectionButton);
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
+		text_files.setBounds(10, 165, 119, 25);
+		panel.add(text_files);
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1);
-		JButton clearSelectionButton = new JButton("Clear selection");
-		clearSelectionButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				text_files.setSelectedIndex(-1);
-			}
-		});
-		leftColumnPanel.add(clearSelectionButton);
-		leftColumnPanel.add(text_files);
 
 		JButton passwordButton = new JButton("Press to start");
-		passwordButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (fileTyper.isRunning()) {
-					fileTyper.stop();
-					((JButton) e.getSource()).setText("Press to start");
-				} else {
-					fileTyper.run("40wordcommon.txt");
-					((JButton) e.getSource()).setText("Running");
-				}
-
-			}
-		});
-
-		leftColumnPanel.add(passwordButton);
+		passwordButton.setBounds(10, 192, 119, 25);
+		panel.add(passwordButton);
 
 		// JSpinner
 		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
+		betweenChars.setBounds(10, 219, 50, 25);
+		panel.add(betweenChars);
+
+		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
+		betweenLines.setBounds(10, 243, 50, 25);
+		panel.add(betweenLines);
 
 		JLabel charsLabel = new JLabel();
+		charsLabel.setBounds(70, 224, 66, 14);
+		panel.add(charsLabel);
 		charsLabel.setText("Chars(ms)");
 		charsLabel.setOpaque(true);
 
-		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
-
 		JLabel linesLabel = new JLabel();
+		linesLabel.setBounds(70, 248, 59, 14);
+		panel.add(linesLabel);
 		linesLabel.setText("Lines(ms)");
 		linesLabel.setOpaque(true);
 
-		leftColumnPanel.add(betweenChars);
-		leftColumnPanel.add(charsLabel);
-		leftColumnPanel.add(betweenLines);
-		leftColumnPanel.add(linesLabel);
-
-		panel.add(leftColumnPanel);
-
 		JList<String> jList_keys = new JList<String>();
+		jList_keys.setBounds(355, 32, 73, 248);
+		panel.add(jList_keys);
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList_keys.setLayoutOrientation(JList.VERTICAL);
 		jList_keys.setVisibleRowCount(-1);
@@ -283,19 +248,49 @@ public class Miner {
 				}
 			}
 		});
+		passwordButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (fileTyper.isRunning()) {
+					fileTyper.stop();
+					((JButton) e.getSource()).setText("Press to start");
+				} else {
+					fileTyper.run("40wordcommon.txt");
+					((JButton) e.getSource()).setText("Running");
+				}
 
-		JScrollPane keyListScroller = new JScrollPane(jList_keys);
-		keyListScroller.setPreferredSize(new Dimension(75, 250));
+			}
+		});
+		clearSelectionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				text_files.setSelectedIndex(-1);
+			}
+		});
+		Mouse2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse2.isSelected()) {
+					Mouse1.setSelected(false);
+				} else {
+					Mouse2.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
+			}
+		});
 
-		c.gridx = 3;
-		c.gridy = 0;
+		Mouse1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse1.isSelected()) {
+					Mouse2.setSelected(false);
+				} else {
+					Mouse1.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON1_DOWN_MASK;
 
-		c.gridheight = 9;
-		c.anchor = GridBagConstraints.EAST;
-		panel.add(keyListScroller, c);
-		c.gridheight = 1;
-
-		frame.getContentPane().add(panel);
+			}
+		});
 		frame.setVisible(true);
 
 		return true;
@@ -350,8 +345,30 @@ public class Miner {
 		});
 
 		keys.add(key_add);
-
 		menuBar.add(keys);
+
+		keys.add(key_clear);
+		// adding Graphics>Default
+		JMenu graphics = new JMenu("Graphics");
+		JMenuItem graphics_default = new JMenuItem("Default");
+		key_add.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				listening = true;
+			}
+		});
+		graphics.add(graphics_default);
+
+		// adding Graphics>tonetta
+		JMenuItem graphics_tonetta = new JMenuItem("Tonetta");
+		key_add.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				listening = true;
+			}
+		});
+		graphics.add(graphics_default);
+		menuBar.add(graphics);
 		frame.setJMenuBar(menuBar);
 	}
 
