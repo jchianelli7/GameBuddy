@@ -272,8 +272,8 @@ public class MinerTest {
 		frame = new JFrame(getSettings().name);
 		frame.setIconImage(imgTonettaSquare);
 
-		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
-		frame.setResizable(false);
+		frame.setSize(new Dimension(500, 500)); // (imgTonetta.getWidth(),
+												// imgTonetta.getHeight())
 		frame.addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -284,7 +284,7 @@ public class MinerTest {
 		});
 
 		@SuppressWarnings("serial")
-		JPanel panel = new JPanel(new GridBagLayout()) {
+		JPanel panel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
@@ -295,23 +295,26 @@ public class MinerTest {
 		// panel.setBorder(new TitledBorder("===="));
 
 		setupMenuBar(frame);
-
+		panel.setLayout(null);
 
 		// JLabel
 		JLabel label = new JLabel();
+		label.setBounds(10, 11, 173, 14);
 		label.setText("Navigate to Keys > Add to add key.");
 		label.setOpaque(true);
 		panel.add(label);
 
-	
 		JLabel label2 = new JLabel();
+		label2.setBounds(10, 34, 109, 14);
 		label2.setText("Press \"Pause\" to start.");
 		label2.setOpaque(true);
 		panel.add(label2);
 
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
+		Mouse1.setBounds(10, 55, 65, 23);
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+		Mouse2.setBounds(77, 55, 65, 23);
 
 		Mouse1.addActionListener(new ActionListener() {
 			@Override
@@ -358,6 +361,7 @@ public class MinerTest {
 		}
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
+		text_files.setBounds(10, 119, 97, 20);
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1);
 		text_files.addActionListener(new ActionListener() {
@@ -366,17 +370,19 @@ public class MinerTest {
 			}
 		});
 		JButton clearSelectionButton = new JButton("Clear selection");
+		clearSelectionButton.setBounds(10, 85, 103, 23);
 		clearSelectionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				text_files.setSelectedIndex(-1);
 			}
 		});
-	
+
 		panel.add(clearSelectionButton);
 		panel.add(text_files);
 
 		JButton passwordButton = new JButton("Press to start");
+		passwordButton.setBounds(10, 139, 97, 23);
 		passwordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -394,34 +400,43 @@ public class MinerTest {
 
 		// JSpinner
 		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
+		betweenChars.setBounds(10, 173, 63, 20);
 		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
+		betweenLines.setBounds(10, 195, 63, 20);
 
 		panel.add(betweenChars);
 
 		JLabel charsLabel = new JLabel();
+		charsLabel.setBounds(77, 176, 49, 14);
 		charsLabel.setText("Chars(ms)");
 		charsLabel.setOpaque(true);
 
 		panel.add(charsLabel);
 
-	
 		panel.add(betweenLines);
 
 		JLabel linesLabel = new JLabel();
+		linesLabel.setBounds(77, 198, 45, 14);
 		linesLabel.setText("Lines(ms)");
 		linesLabel.setOpaque(true);
-	
+
 		panel.add(linesLabel);
 
+		JScrollPane keyListScroller = new JScrollPane();
+		keyListScroller.setBounds(356, 87, 75, 250);
+		keyListScroller.setPreferredSize(new Dimension(75, 250));
+
+		panel.add(keyListScroller);
+
+		frame.getContentPane().add(panel);
 		JList<String> jList_keys = new JList<String>();
+		jList_keys.setBounds(396, 65, 73, 248);
+		panel.add(jList_keys);
 		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList_keys.setLayoutOrientation(JList.VERTICAL);
 		jList_keys.setVisibleRowCount(-1);
-
 		jList_keys.setModel(keyList.getListModel());
-
 		jList_keys.addMouseListener(new MouseAdapter() {
-
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
@@ -432,13 +447,6 @@ public class MinerTest {
 				}
 			}
 		});
-
-		JScrollPane keyListScroller = new JScrollPane(jList_keys);
-		keyListScroller.setPreferredSize(new Dimension(75, 250));
-
-		panel.add(keyListScroller);
-
-		frame.add(panel);
 		frame.setVisible(true);
 
 	}
