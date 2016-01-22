@@ -3,6 +3,7 @@ package me.jchianelli7.Mine4Me;
 import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -45,15 +45,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
-//Using jnativehook for keyboard and mouse listeners.
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import me.jchianelli7.Mine4Me.gui.KeyList;
 
-public class Miner {
-
-	public static Miner instance;
+public class MinerTest {
+	public static MinerTest instance;
 	public static final Settings settings = new Settings();
 
 	private KeyList keyList;
@@ -74,13 +72,27 @@ public class Miner {
 	public JSpinner betweenChars;
 	public JSpinner betweenLines;
 
-	public static void main(String[] args) throws AWTException {
-		System.out.println("Starting");
-		instance = new Miner();
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					instance = new MinerTest();
+					instance.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
-
-	public Miner() {
+	/**
+	 * Create the application.
+	 */
+	public MinerTest() {
+		initialize();
 		fileTyper = new FileTyper();
 		keyList = new KeyList();
 		loadImages();
@@ -90,7 +102,8 @@ public class Miner {
 			logger.setLevel(Level.OFF);
 			logger.setUseParentHandlers(false);
 			GlobalScreen.registerNativeHook();
-			GlobalScreen.addNativeKeyListener(new me.jchianelli7.Mine4Me.NativeKeyListener(this));
+			// GlobalScreen.addNativeKeyListener(new
+			// me.jchianelli7.Mine4Me.NativeKeyListener(this));
 
 		} catch (NativeHookException e) {
 			e.printStackTrace();
@@ -108,11 +121,6 @@ public class Miner {
 			System.out.println("SystemTray is not supported");
 		}
 
-		if (!setupJFrame()) {
-			System.out.println("JFrame could not be setup!");
-			exit();
-		}
-
 	}
 
 	private void loadImages() {
@@ -122,190 +130,6 @@ public class Miner {
 		} catch (IOException e) {
 			exit();
 		}
-	}
-
-	private boolean setupJFrame() {
-		frame = new JFrame(getSettings().name);
-		frame.setIconImage(imgTonettaSquare);
-
-		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
-		frame.setResizable(false);
-		frame.addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent windowEvent) {
-				exit();
-			}
-
-		});
-
-		@SuppressWarnings("serial")
-		JPanel panel = new JPanel(new GridBagLayout()) {
-			@Override
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				g.drawImage(imgTonetta, 0, 0, null);
-			}
-		};
-		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
-		// panel.setBorder(new TitledBorder("===="));
-
-		setupMenuBar(frame);
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0.5;
-		c.weighty = 1;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		c.fill = GridBagConstraints.NONE;
-
-		JPanel leftColumnPanel = new JPanel();
-		leftColumnPanel.setLayout(new BoxLayout(leftColumnPanel, BoxLayout.Y_AXIS));
-		leftColumnPanel.setPreferredSize(new Dimension(50, frame.getHeight()));
-		JLabel label = new JLabel();
-		label.setText("Navigate to Keys > Add to add key.");
-
-		label.setOpaque(true);
-		leftColumnPanel.add(label);
-
-		JLabel label2 = new JLabel();
-		label2.setText("Press \"Pause\" to start.");
-		label2.setOpaque(true);
-		leftColumnPanel.add(label2);
-
-		// JRadioButton
-		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
-		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-
-		Mouse1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (Mouse1.isSelected()) {
-					Mouse2.setSelected(false);
-				} else {
-					Mouse1.setSelected(false);
-				}
-				mouseButton = InputEvent.BUTTON1_DOWN_MASK;
-
-			}
-		});
-		Mouse2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (Mouse2.isSelected()) {
-					Mouse1.setSelected(false);
-				} else {
-					Mouse2.setSelected(false);
-				}
-				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
-			}
-		});
-
-		leftColumnPanel.add(Mouse1);
-		leftColumnPanel.add(Mouse2);
-
-		// JComboBox
-		ArrayList<String> txtFiles = new ArrayList<String>();
-
-		try {
-			File filesFolder = new File(ClassLoader.getSystemResource("files").toURI());
-			File[] fileList = filesFolder.listFiles();
-
-			for (int i = 0; i < fileList.length; i++) {
-				if (fileList[i].isFile()) {
-					txtFiles.add(fileList[i].getName());
-				}
-			}
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
-		}
-
-		JComboBox text_files = new JComboBox(txtFiles.toArray());
-		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
-		text_files.setSelectedIndex(-1);
-		JButton clearSelectionButton = new JButton("Clear selection");
-		clearSelectionButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				text_files.setSelectedIndex(-1);
-			}
-		});
-		leftColumnPanel.add(clearSelectionButton);
-		leftColumnPanel.add(text_files);
-
-		JButton passwordButton = new JButton("Press to start");
-		passwordButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (fileTyper.isRunning()) {
-					fileTyper.stop();
-					((JButton) e.getSource()).setText("Press to start");
-				} else {
-					fileTyper.run("40wordcommon.txt");
-					((JButton) e.getSource()).setText("Running");
-				}
-
-			}
-		});
-
-		leftColumnPanel.add(passwordButton);
-
-		// JSpinner
-		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
-
-		JLabel charsLabel = new JLabel();
-		charsLabel.setText("Chars(ms)");
-		charsLabel.setOpaque(true);
-
-		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
-
-		JLabel linesLabel = new JLabel();
-		linesLabel.setText("Lines(ms)");
-		linesLabel.setOpaque(true);
-
-		leftColumnPanel.add(betweenChars);
-		leftColumnPanel.add(charsLabel);
-		leftColumnPanel.add(betweenLines);
-		leftColumnPanel.add(linesLabel);
-
-		panel.add(leftColumnPanel);
-
-		JList<String> jList_keys = new JList<String>();
-		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		jList_keys.setLayoutOrientation(JList.VERTICAL);
-		jList_keys.setVisibleRowCount(-1);
-
-		jList_keys.setModel(keyList.getListModel());
-
-		jList_keys.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					@SuppressWarnings("unchecked")
-					JList<String> list = (JList<String>) e.getSource();
-					int row = list.locationToIndex(e.getPoint());
-					keyList.removeKey(row);
-				}
-			}
-		});
-
-		JScrollPane keyListScroller = new JScrollPane(jList_keys);
-		keyListScroller.setPreferredSize(new Dimension(75, 250));
-
-		c.gridx = 3;
-		c.gridy = 0;
-
-		c.gridheight = 9;
-		c.anchor = GridBagConstraints.EAST;
-		panel.add(keyListScroller, c);
-		c.gridheight = 1;
-
-		frame.getContentPane().add(panel);
-		frame.setVisible(true);
-
-		return true;
 	}
 
 	private void setupMenuBar(JFrame frame) {
@@ -440,4 +264,183 @@ public class Miner {
 		}
 
 	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame(getSettings().name);
+		frame.setIconImage(imgTonettaSquare);
+
+		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
+		frame.setResizable(false);
+		frame.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				exit();
+			}
+
+		});
+
+		@SuppressWarnings("serial")
+		JPanel panel = new JPanel(new GridBagLayout()) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.drawImage(imgTonetta, 0, 0, null);
+			}
+		};
+		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
+		// panel.setBorder(new TitledBorder("===="));
+
+		setupMenuBar(frame);
+
+
+		// JLabel
+		JLabel label = new JLabel();
+		label.setText("Navigate to Keys > Add to add key.");
+		label.setOpaque(true);
+		panel.add(label);
+
+	
+		JLabel label2 = new JLabel();
+		label2.setText("Press \"Pause\" to start.");
+		label2.setOpaque(true);
+		panel.add(label2);
+
+		// JRadioButton
+		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
+		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
+
+		Mouse1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse1.isSelected()) {
+					Mouse2.setSelected(false);
+				} else {
+					Mouse1.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON1_DOWN_MASK;
+
+			}
+		});
+		Mouse2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Mouse2.isSelected()) {
+					Mouse1.setSelected(false);
+				} else {
+					Mouse2.setSelected(false);
+				}
+				mouseButton = InputEvent.BUTTON3_DOWN_MASK;
+			}
+		});
+
+		panel.add(Mouse1);
+
+		panel.add(Mouse2);
+
+		// JComboBox
+		ArrayList<String> txtFiles = new ArrayList<String>();
+
+		try {
+			File filesFolder = new File(ClassLoader.getSystemResource("files").toURI());
+			File[] fileList = filesFolder.listFiles();
+
+			for (int i = 0; i < fileList.length; i++) {
+				if (fileList[i].isFile()) {
+					txtFiles.add(fileList[i].getName());
+				}
+			}
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+		}
+
+		JComboBox text_files = new JComboBox(txtFiles.toArray());
+		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
+		text_files.setSelectedIndex(-1);
+		text_files.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		JButton clearSelectionButton = new JButton("Clear selection");
+		clearSelectionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				text_files.setSelectedIndex(-1);
+			}
+		});
+	
+		panel.add(clearSelectionButton);
+		panel.add(text_files);
+
+		JButton passwordButton = new JButton("Press to start");
+		passwordButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (fileTyper.isRunning()) {
+					fileTyper.stop();
+					((JButton) e.getSource()).setText("Press to start");
+				} else {
+					fileTyper.run("40wordcommon.txt");
+					((JButton) e.getSource()).setText("Running");
+				}
+
+			}
+		});
+		panel.add(passwordButton);
+
+		// JSpinner
+		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
+		betweenLines = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 50));
+
+		panel.add(betweenChars);
+
+		JLabel charsLabel = new JLabel();
+		charsLabel.setText("Chars(ms)");
+		charsLabel.setOpaque(true);
+
+		panel.add(charsLabel);
+
+	
+		panel.add(betweenLines);
+
+		JLabel linesLabel = new JLabel();
+		linesLabel.setText("Lines(ms)");
+		linesLabel.setOpaque(true);
+	
+		panel.add(linesLabel);
+
+		JList<String> jList_keys = new JList<String>();
+		jList_keys.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jList_keys.setLayoutOrientation(JList.VERTICAL);
+		jList_keys.setVisibleRowCount(-1);
+
+		jList_keys.setModel(keyList.getListModel());
+
+		jList_keys.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					@SuppressWarnings("unchecked")
+					JList<String> list = (JList<String>) e.getSource();
+					int row = list.locationToIndex(e.getPoint());
+					keyList.removeKey(row);
+				}
+			}
+		});
+
+		JScrollPane keyListScroller = new JScrollPane(jList_keys);
+		keyListScroller.setPreferredSize(new Dimension(75, 250));
+
+		panel.add(keyListScroller);
+
+		frame.add(panel);
+		frame.setVisible(true);
+
+	}
+
 }
