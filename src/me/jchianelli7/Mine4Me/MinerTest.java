@@ -269,7 +269,7 @@ public class MinerTest {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame(getSettings().name);
+		frame = new JFrame(getSettings().getName());
 		frame.setIconImage(imgTonettaSquare);
 
 		frame.setSize(new Dimension(500, 500)); // (imgTonetta.getWidth(),

@@ -18,15 +18,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -50,11 +47,12 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import me.jchianelli7.Mine4Me.gui.KeyList;
+import me.jchianelli7.Mine4Me.gui.Theme;
 
 public class Miner {
 
 	public static Miner instance;
-	public static final Settings settings = new Settings();
+	public static Settings settings;
 
 	private KeyList keyList;
 
@@ -64,9 +62,6 @@ public class Miner {
 
 	public FileTyper fileTyper;
 	Robot bot;
-
-	BufferedImage imgTonetta;
-	BufferedImage imgTonettaSquare;
 
 	boolean arePressed;
 	boolean listening;
@@ -79,11 +74,10 @@ public class Miner {
 		instance = new Miner();
 	}
 
-
 	public Miner() {
+		settings = new Settings();
 		fileTyper = new FileTyper();
 		keyList = new KeyList();
-		loadImages();
 
 		try {
 			Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
@@ -115,20 +109,18 @@ public class Miner {
 
 	}
 
-	private void loadImages() {
-		try {
-			imgTonetta = ImageIO.read(ClassLoader.getSystemResource("imgs/tonetta.jpg"));
-			imgTonettaSquare = ImageIO.read(ClassLoader.getSystemResource("imgs/tonettaSquare.jpg"));
-		} catch (IOException e) {
-			exit();
-		}
-	}
-
 	private boolean setupJFrame() {
-		frame = new JFrame(getSettings().name);
-		frame.setIconImage(imgTonettaSquare);
+		Theme theme = getSettings().getCurrentTheme();
 
-		frame.setSize(new Dimension(imgTonetta.getWidth(), imgTonetta.getHeight()));
+		frame = new JFrame(getSettings().getName());
+		frame.setIconImage(theme.getIconImage());
+
+		if (theme.hasBackgroundImage()) {
+			frame.setSize(new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
+		} else {
+			frame.setSize(new Dimension(480, 360));
+		}
+
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -144,12 +136,13 @@ public class Miner {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.drawImage(imgTonetta, 0, 0, null);
+				if (getSettings().getCurrentTheme().hasBackgroundImage()) {
+					g.drawImage(getSettings().getCurrentTheme().getBackgroundImage(), 0, 0, null);
+				}
 			}
 		};
 		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
-		// panel.setBorder(new TitledBorder("===="));
-
+		
 		setupMenuBar(frame);
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -367,7 +360,14 @@ public class Miner {
 			return false;
 		}
 
-		final TrayIcon trayIcon = new TrayIcon(imgTonettaSquare);
+		TrayIcon trayIcon;
+		
+		if(getSettings().getCurrentTheme().hasIconImage()) {
+			trayIcon = new TrayIcon(getSettings().getCurrentTheme().getIconImage());
+		} else {
+			trayIcon = null;
+		}
+		
 		trayIcon.setImageAutoSize(true);
 
 		final PopupMenu popup = new PopupMenu();
