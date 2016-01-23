@@ -135,14 +135,14 @@ public class Miner {
 			}
 		};
 
+		panel.setPreferredSize(new Dimension(480, 360));
+		
 		if (theme.hasBackgroundImage()) {
 			panel.setPreferredSize(
 					new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
 			System.out.println(
 					theme.getBackgroundImage().getWidth() + "x" + theme.getBackgroundImage().getHeight() + "y");
 
-		} else {
-			panel.setPreferredSize(new Dimension(480, 360));
 		}
 
 		setupMenuBar(frame);
