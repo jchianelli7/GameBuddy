@@ -140,9 +140,6 @@ public class Miner {
 		if (theme.hasBackgroundImage()) {
 			panel.setPreferredSize(
 					new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
-			System.out.println(
-					theme.getBackgroundImage().getWidth() + "x" + theme.getBackgroundImage().getHeight() + "y");
-
 		}
 
 		setupMenuBar(frame);
@@ -192,7 +189,7 @@ public class Miner {
 		Mouse2.setBounds(87, 56, 89, 24);
 		panel.add(Mouse2);
 		JButton clearSelectionButton = new JButton("Clear selection");
-		clearSelectionButton.setBounds(10, 88, 103, 25);
+		clearSelectionButton.setBounds(10, 88, 119, 25);
 		panel.add(clearSelectionButton);
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
