@@ -197,16 +197,16 @@ public class Miner {
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
 		text_files.setBounds(10, 165, 119, 25);
-		panel.add(text_files);
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1);
-
+		panel.add(text_files);
+		
 		JButton passwordButton = new JButton("Press to start");
 		passwordButton.setBounds(10, 192, 119, 25);
 		panel.add(passwordButton);
 
 		// JSpinner
-		betweenChars = new JSpinner(new SpinnerNumberModel(10, 0, 1000, 10));
+		betweenChars = new JSpinner(new SpinnerNumberModel(50, 0, 1000, 10));
 		betweenChars.setBounds(10, 219, 50, 25);
 		panel.add(betweenChars);
 
@@ -254,7 +254,7 @@ public class Miner {
 					fileTyper.stop();
 					((JButton) e.getSource()).setText("Press to start");
 				} else {
-					fileTyper.run("40wordcommon.txt");
+					fileTyper.run((String) text_files.getModel().getSelectedItem());
 					((JButton) e.getSource()).setText("Running");
 				}
 
