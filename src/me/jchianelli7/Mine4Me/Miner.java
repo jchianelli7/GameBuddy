@@ -151,7 +151,7 @@ public class Miner {
 		ArrayList<String> txtFiles = new ArrayList<String>();
 
 		try {
-			File filesFolder = new File(ClassLoader.getSystemResource("files").toURI());
+			File filesFolder = new File(ClassLoader.getSystemResource("./files").toURI());
 			File[] fileList = filesFolder.listFiles();
 
 			for (int i = 0; i < fileList.length; i++) {

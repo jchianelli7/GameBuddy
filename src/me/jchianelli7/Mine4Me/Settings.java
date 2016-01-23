@@ -17,7 +17,7 @@ public class Settings {
 		themeList = new ArrayList<Theme>();
 
 		try {
-			File themesFolder = new File(ClassLoader.getSystemResource("themes").toURI());
+			File themesFolder = new File(ClassLoader.getSystemResource("./themes").toURI());
 			File[] themeFileList = themesFolder.listFiles();
 
 			for (int i = 0; i < themeFileList.length; i++) {
