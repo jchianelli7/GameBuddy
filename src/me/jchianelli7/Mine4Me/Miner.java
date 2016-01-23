@@ -4,8 +4,6 @@ import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Robot;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -35,7 +32,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -118,12 +114,6 @@ public class Miner {
 		frame = new JFrame(getSettings().getName());
 		frame.setIconImage(theme.getIconImage());
 
-		if (theme.hasBackgroundImage()) {
-			frame.setSize(new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
-		} else {
-			frame.setSize(new Dimension(480, 360));
-		}
-
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -144,7 +134,16 @@ public class Miner {
 				}
 			}
 		};
-		panel.setSize(new Dimension(frame.getWidth() / 2, frame.getHeight() / 2));
+
+		if (theme.hasBackgroundImage()) {
+			panel.setPreferredSize(
+					new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
+			System.out.println(
+					theme.getBackgroundImage().getWidth() + "x" + theme.getBackgroundImage().getHeight() + "y");
+
+		} else {
+			panel.setPreferredSize(new Dimension(480, 360));
+		}
 
 		setupMenuBar(frame);
 
@@ -291,6 +290,8 @@ public class Miner {
 
 			}
 		});
+
+		frame.pack();
 		frame.setVisible(true);
 
 		return true;
@@ -348,26 +349,20 @@ public class Miner {
 		menuBar.add(keys);
 
 		keys.add(key_clear);
-		// adding Graphics>Default
+		
+		//Adding Themes
 		JMenu graphics = new JMenu("Graphics");
-		JMenuItem graphics_default = new JMenuItem("Default");
-		key_add.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				listening = true;
-			}
-		});
-		graphics.add(graphics_default);
+		for (Theme t : getSettings().getThemes()) {
+			JMenuItem themeMenuItem = new JMenuItem(t.getName());
+			themeMenuItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					getSettings().setTheme(((JMenuItem) event.getSource()).getText());
+				}
+			});
+			graphics.add(themeMenuItem);
+		}
 
-		// adding Graphics>tonetta
-		JMenuItem graphics_tonetta = new JMenuItem("Tonetta");
-		key_add.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				listening = true;
-			}
-		});
-		graphics.add(graphics_default);
 		menuBar.add(graphics);
 		frame.setJMenuBar(menuBar);
 	}
@@ -378,13 +373,13 @@ public class Miner {
 		}
 
 		TrayIcon trayIcon;
-		
-		if(getSettings().getCurrentTheme().hasIconImage()) {
+
+		if (getSettings().getCurrentTheme().hasIconImage()) {
 			trayIcon = new TrayIcon(getSettings().getCurrentTheme().getIconImage());
 		} else {
 			trayIcon = null;
 		}
-		
+
 		trayIcon.setImageAutoSize(true);
 
 		final PopupMenu popup = new PopupMenu();

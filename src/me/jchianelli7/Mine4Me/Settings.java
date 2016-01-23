@@ -33,8 +33,17 @@ public class Settings {
 
 	}
 	
+	public void setTheme(String name) {
+		currentTheme = getTheme(name);
+		Miner.instance.frame.repaint();
+	}
+	
 	public Theme getCurrentTheme() {
 		return currentTheme;
+	}
+	
+	public ArrayList<Theme> getThemes() {
+		return themeList;
 	}
 
 	public String getName() {
