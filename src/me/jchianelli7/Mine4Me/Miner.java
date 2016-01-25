@@ -46,7 +46,8 @@ import me.jchianelli7.Mine4Me.gui.KeyList;
 import me.jchianelli7.Mine4Me.gui.Theme;
 
 public class Miner {
-
+//this is a test
+	
 	public static Miner instance;
 	public static Settings settings;
 
