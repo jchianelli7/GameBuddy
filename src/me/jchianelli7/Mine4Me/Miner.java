@@ -46,8 +46,8 @@ import me.jchianelli7.Mine4Me.gui.KeyList;
 import me.jchianelli7.Mine4Me.gui.Theme;
 
 public class Miner {
-//this is a test
-	
+	// this is a test
+
 	public static Miner instance;
 	public static Settings settings;
 
@@ -58,7 +58,11 @@ public class Miner {
 	public JFrame frame;
 
 	public FileTyper fileTyper;
+
 	Robot bot;
+	Robot clicker;
+
+	boolean clicking;
 
 	boolean arePressed;
 	boolean listening;
@@ -105,7 +109,7 @@ public class Miner {
 		}
 
 	}
-	
+
 	private boolean isMac() {
 		return System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
 	}
@@ -117,11 +121,11 @@ public class Miner {
 		Theme theme = getSettings().getCurrentTheme();
 
 		frame = new JFrame(getSettings().getName());
-		
-		if(!isMac()) {
+
+		if (!isMac()) {
 			frame.setIconImage(theme.getIconImage());
 		}
-		
+
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -144,7 +148,7 @@ public class Miner {
 		};
 
 		panel.setPreferredSize(new Dimension(480, 360));
-		
+
 		if (theme.hasBackgroundImage()) {
 			panel.setPreferredSize(
 					new Dimension(theme.getBackgroundImage().getWidth(), theme.getBackgroundImage().getHeight()));
@@ -171,7 +175,7 @@ public class Miner {
 
 		frame.getContentPane().add(panel);
 		JLabel label = new JLabel();
-		label.setBounds(10, 11, 218, 19);
+		label.setBounds(10, 11, 235, 19);
 		panel.add(label);
 		label.setText("Navigate to Keys > Add to add key.");
 
@@ -184,7 +188,7 @@ public class Miner {
 		label2.setOpaque(true);
 
 		JLabel label3 = new JLabel();
-		label3.setBounds(10, 139, 103, 25);
+		label3.setBounds(10, 138, 103, 25);
 		panel.add(label3);
 		label3.setText("Select .txt File");
 		label3.setOpaque(true);
@@ -194,10 +198,10 @@ public class Miner {
 		Mouse1.setBounds(10, 56, 103, 25);
 		panel.add(Mouse1);
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-		Mouse2.setBounds(123, 57, 89, 24);
+		Mouse2.setBounds(107, 57, 89, 24);
 		panel.add(Mouse2);
 		JButton clearSelectionButton = new JButton("Clear selection");
-		clearSelectionButton.setBounds(10, 88, 119, 25);
+		clearSelectionButton.setBounds(10, 113, 119, 25);
 		panel.add(clearSelectionButton);
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
@@ -205,9 +209,9 @@ public class Miner {
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1);
 		panel.add(text_files);
-		
+
 		JButton passwordButton = new JButton("Press to start");
-		passwordButton.setBounds(10, 192, 119, 25);
+		passwordButton.setBounds(10, 191, 119, 25);
 		panel.add(passwordButton);
 
 		// JSpinner
@@ -226,7 +230,7 @@ public class Miner {
 		charsLabel.setOpaque(true);
 
 		JLabel linesLabel = new JLabel();
-		linesLabel.setBounds(70, 248, 59, 14);
+		linesLabel.setBounds(70, 248, 66, 14);
 		panel.add(linesLabel);
 		linesLabel.setText("Lines(ms)");
 		linesLabel.setOpaque(true);
@@ -295,6 +299,47 @@ public class Miner {
 
 			}
 		});
+		// Auto Clicker
+
+		JLabel lblAutoClicker = new JLabel("Auto Clicker (<50)");
+		lblAutoClicker.setBounds(139, 142, 137, 16);
+		panel.add(lblAutoClicker);
+
+		JButton btnStartClicking = new JButton("Start Clicking");
+		btnStartClicking.setBounds(128, 189, 117, 29);
+		panel.add(btnStartClicking);
+
+		JSpinner click_speed = new JSpinner();
+		click_speed.setBounds(138, 164, 93, 26);
+		panel.add(click_speed);
+		
+
+		btnStartClicking.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					clicker = new Robot();
+					
+				} catch (AWTException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if ((int) click_speed.getValue() < 50) {
+					((JButton) e.getSource()).setText("Too Low!");
+				} else {
+					clicking = !clicking;
+					while (clicking) {
+						((JButton) e.getSource()).setText("Clicking");
+						try {
+							Thread.sleep((int) click_speed.getValue());
+							clicker.mousePress(InputEvent.BUTTON1_MASK);
+							clicker.mouseRelease(InputEvent.BUTTON1_MASK);
+						} catch (InterruptedException ex) {
+						}
+					}
+
+				}
+			}
+		});
 
 		frame.pack();
 		frame.setVisible(true);
@@ -354,8 +399,8 @@ public class Miner {
 		menuBar.add(keys);
 
 		keys.add(key_clear);
-		
-		//Adding Themes
+
+		// Adding Themes
 		JMenu graphics = new JMenu("Graphics");
 		for (Theme t : getSettings().getThemes()) {
 			JMenuItem themeMenuItem = new JMenuItem(t.getName());
