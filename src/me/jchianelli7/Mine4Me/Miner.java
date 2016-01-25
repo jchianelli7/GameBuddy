@@ -105,6 +105,10 @@ public class Miner {
 		}
 
 	}
+	
+	private boolean isMac() {
+		return System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
+	}
 
 	/**
 	 * @wbp.parser.entryPoint
@@ -113,8 +117,11 @@ public class Miner {
 		Theme theme = getSettings().getCurrentTheme();
 
 		frame = new JFrame(getSettings().getName());
-		frame.setIconImage(theme.getIconImage());
-
+		
+		if(!isMac()) {
+			frame.setIconImage(theme.getIconImage());
+		}
+		
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -184,10 +191,10 @@ public class Miner {
 
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
-		Mouse1.setBounds(10, 56, 75, 25);
+		Mouse1.setBounds(10, 56, 103, 25);
 		panel.add(Mouse1);
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-		Mouse2.setBounds(87, 56, 89, 24);
+		Mouse2.setBounds(123, 57, 89, 24);
 		panel.add(Mouse2);
 		JButton clearSelectionButton = new JButton("Clear selection");
 		clearSelectionButton.setBounds(10, 88, 119, 25);
