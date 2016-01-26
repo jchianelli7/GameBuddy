@@ -188,7 +188,7 @@ public class Miner {
 		label2.setOpaque(true);
 
 		JLabel label3 = new JLabel();
-		label3.setBounds(20, 138, 103, 25);
+		label3.setBounds(10, 124, 103, 25);
 		panel.add(label3);
 		label3.setText("Select .txt File");
 		label3.setOpaque(true);
@@ -196,22 +196,24 @@ public class Miner {
 		// JRadioButton
 		JCheckBox Mouse1 = new JCheckBox("Mouse 1");
 		Mouse1.setBounds(10, 56, 103, 25);
+		Mouse1.setOpaque(true);
 		panel.add(Mouse1);
 		JCheckBox Mouse2 = new JCheckBox("Mouse 2");
-		Mouse2.setBounds(107, 57, 89, 24);
+		Mouse2.setBounds(114, 57, 89, 24);
+		Mouse2.setOpaque(true);
 		panel.add(Mouse2);
 		JButton clearSelectionButton = new JButton("Clear selection");
-		clearSelectionButton.setBounds(10, 113, 119, 25);
+		clearSelectionButton.setBounds(10, 182, 123, 25);
 		panel.add(clearSelectionButton);
 
 		JComboBox text_files = new JComboBox(txtFiles.toArray());
-		text_files.setBounds(10, 165, 119, 25);
+		text_files.setBounds(10, 153, 119, 25);
 		text_files.setRenderer(new MyComboBoxRenderer("Choose..."));
 		text_files.setSelectedIndex(-1);
 		panel.add(text_files);
 
 		JButton passwordButton = new JButton("Press to start");
-		passwordButton.setBounds(10, 191, 119, 25);
+		passwordButton.setBounds(10, 274, 119, 25);
 		panel.add(passwordButton);
 
 		// JSpinner
@@ -305,6 +307,7 @@ public class Miner {
 		JLabel lblAutoClicker = new JLabel("Auto Clicker (<50)");
 		lblAutoClicker.setBounds(139, 142, 137, 16);
 		panel.add(lblAutoClicker);
+		lblAutoClicker.setOpaque(true);
 
 		JButton btnStartClicking = new JButton("Start Clicking");
 		btnStartClicking.setBounds(128, 189, 117, 29);
