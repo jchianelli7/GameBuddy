@@ -188,7 +188,7 @@ public class Miner {
 		label2.setOpaque(true);
 
 		JLabel label3 = new JLabel();
-		label3.setBounds(10, 138, 103, 25);
+		label3.setBounds(20, 138, 103, 25);
 		panel.add(label3);
 		label3.setText("Select .txt File");
 		label3.setOpaque(true);
@@ -299,6 +299,7 @@ public class Miner {
 
 			}
 		});
+
 		// Auto Clicker
 
 		JLabel lblAutoClicker = new JLabel("Auto Clicker (<50)");
@@ -312,32 +313,37 @@ public class Miner {
 		JSpinner click_speed = new JSpinner();
 		click_speed.setBounds(138, 164, 93, 26);
 		panel.add(click_speed);
-		
 
 		btnStartClicking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					clicker = new Robot();
-					
+
 				} catch (AWTException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				if ((int) click_speed.getValue() < 50) {
-					((JButton) e.getSource()).setText("Too Low!");
-				} else {
-					clicking = !clicking;
-					while (clicking) {
-						((JButton) e.getSource()).setText("Clicking");
-						try {
-							Thread.sleep((int) click_speed.getValue());
-							clicker.mousePress(InputEvent.BUTTON1_MASK);
-							clicker.mouseRelease(InputEvent.BUTTON1_MASK);
-						} catch (InterruptedException ex) {
+				Thread t = new Thread() {
+					public void run() {
+						if ((int) click_speed.getValue() < 50) {
+							((JButton) e.getSource()).setText("Too Low!");
+						} else {
+							clicking = !clicking;
+							while (clicking) {
+								((JButton) e.getSource()).setText("Clicking");
+								try {
+									Thread.sleep((int) click_speed.getValue());
+									clicker.mousePress(InputEvent.BUTTON1_MASK);
+									clicker.mouseRelease(InputEvent.BUTTON1_MASK);
+								} catch (InterruptedException ex) {
+								}
+							}
+
 						}
 					}
-
-				}
+				};
+				t.start();
+				((JButton) e.getSource()).setText("Start Clicking");
 			}
 		});
 
