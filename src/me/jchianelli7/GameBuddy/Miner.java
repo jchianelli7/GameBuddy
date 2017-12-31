@@ -46,7 +46,6 @@ import me.jchianelli7.GameBuddy.gui.KeyList;
 import me.jchianelli7.GameBuddy.gui.Theme;
 
 public class Miner {
-	// this is a test
 
 	public static Miner instance;
 	public static Settings settings;
@@ -56,6 +55,7 @@ public class Miner {
 	public int mouseButton;
 
 	public JFrame frame;
+
 
 	public FileTyper fileTyper;
 
@@ -121,6 +121,8 @@ public class Miner {
 		Theme theme = getSettings().getCurrentTheme();
 
 		frame = new JFrame(getSettings().getName());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
 		if (!isMac()) {
 			frame.setIconImage(theme.getIconImage());
@@ -265,7 +267,7 @@ public class Miner {
 					fileTyper.stop();
 					((JButton) e.getSource()).setText("Press to start");
 				} else {
-					fileTyper.run((String) text_files.getModel().getSelectedItem());
+					fileTyper.run((String) text_files.getModel().getSelectedItem(), (JButton)e.getSource());
 					((JButton) e.getSource()).setText("Running");
 				}
 

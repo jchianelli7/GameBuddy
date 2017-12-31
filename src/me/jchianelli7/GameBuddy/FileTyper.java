@@ -1,5 +1,6 @@
 package me.jchianelli7.GameBuddy;
 
+import javax.swing.*;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.BufferedReader;
@@ -15,14 +16,14 @@ public class FileTyper {
 	public FileTyper() {
 	}
 
-	public void run(String fileName) {
+	public void run(String fileName, JButton button) {
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
 
-		thread = new FileTyperThread(this, "FileTyper", fileName);
+		thread = new FileTyperThread(this, "FileTyper", fileName, button);
 		thread.start();
 	}
 
@@ -355,14 +356,17 @@ class FileTyperThread extends Thread {
 
 	private final FileTyper fileTyper;
 	private final String fileName;
+	private JButton button;
 
-	public FileTyperThread(FileTyper fileTyper, String name, String fileName) {
+	public FileTyperThread(FileTyper fileTyper, String name, String fileName, JButton button) {
 		super(name);
 		this.fileTyper = fileTyper;
 		this.fileName = fileName;
+		this.button=button;
 	}
 
 	public void run() {
+
 		BufferedReader in;
 		try {
 			in = new BufferedReader(
@@ -392,6 +396,7 @@ class FileTyperThread extends Thread {
 					Thread.sleep((int) Miner.instance.betweenLines.getValue());
 					line = in.readLine();
 				}
+				button.setText("Press to start");
 
 			} catch (IOException | InterruptedException | IllegalArgumentException | SecurityException e) {
 				e.printStackTrace();

@@ -1,2 +1,2 @@
-# Mine4Me
-A small script that simulates holding the left mouse.
+# GameBuddy
+Java applet for auto clicking, auto typing, and simulation of pressing keys/mouse buttons
