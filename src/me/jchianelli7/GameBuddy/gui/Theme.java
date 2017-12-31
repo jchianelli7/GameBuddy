@@ -1,4 +1,4 @@
-package me.jchianelli7.Mine4Me.gui;
+package me.jchianelli7.GameBuddy.gui;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

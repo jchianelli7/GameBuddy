@@ -1,6 +1,4 @@
-package me.jchianelli7.Mine4Me;
-
-import java.awt.event.InputEvent;
+package me.jchianelli7.GameBuddy;
 
 import org.jnativehook.keyboard.NativeKeyEvent;
 

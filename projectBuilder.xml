@@ -5,7 +5,7 @@
     <target name="MakeJar">
         <jar destfile="${dir.jarfile}/GameBuddy.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="me.jchianelli7.Mine4Me.Miner"/>
+                <attribute name="Main-Class" value="me.jchianelli7.GameBuddy.Miner"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${dir.jarfile}" excludes="GameBuddy.jar"/>

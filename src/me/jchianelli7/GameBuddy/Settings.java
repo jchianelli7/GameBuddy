@@ -1,10 +1,10 @@
-package me.jchianelli7.Mine4Me;
+package me.jchianelli7.GameBuddy;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import me.jchianelli7.Mine4Me.gui.Theme;
+import me.jchianelli7.GameBuddy.gui.Theme;
 
 public class Settings {
 

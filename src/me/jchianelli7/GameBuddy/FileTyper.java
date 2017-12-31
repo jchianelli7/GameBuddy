@@ -1,4 +1,4 @@
-package me.jchianelli7.Mine4Me;
+package me.jchianelli7.GameBuddy;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.awt.event.KeyEvent.*;
-import com.sun.glass.events.KeyEvent;
 
 public class FileTyper {
 

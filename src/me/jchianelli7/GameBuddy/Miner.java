@@ -1,4 +1,4 @@
-package me.jchianelli7.Mine4Me;
+package me.jchianelli7.GameBuddy;
 
 import java.awt.AWTException;
 import java.awt.Component;
@@ -42,8 +42,8 @@ import javax.swing.SwingUtilities;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import me.jchianelli7.Mine4Me.gui.KeyList;
-import me.jchianelli7.Mine4Me.gui.Theme;
+import me.jchianelli7.GameBuddy.gui.KeyList;
+import me.jchianelli7.GameBuddy.gui.Theme;
 
 public class Miner {
 	// this is a test
@@ -85,7 +85,7 @@ public class Miner {
 			logger.setLevel(Level.OFF);
 			logger.setUseParentHandlers(false);
 			GlobalScreen.registerNativeHook();
-			GlobalScreen.addNativeKeyListener(new me.jchianelli7.Mine4Me.NativeKeyListener(this));
+			GlobalScreen.addNativeKeyListener(new me.jchianelli7.GameBuddy.NativeKeyListener(this));
 
 		} catch (NativeHookException e) {
 			e.printStackTrace();
